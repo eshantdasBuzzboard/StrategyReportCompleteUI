@@ -1,20 +1,7 @@
 from quart import Quart, render_template, jsonify, request, send_file
-from chatbot.chains import chatbot_reply_chain
+
 
 app = Quart(__name__)
-
-
-level_two_summary = """
-Hey Pumpkin Porters team! We wanted to create this quick audio summary to walk you through the key findings from our latest marketing report.
-
-First, fantastic news on Instagram! Impressions jumped by over 500 percent in August, showing real momentum in our local brand visibility. Facebook posts and ad clicks also saw big increases, and we’re maintaining a perfect review response rate—great job building trust with our audience.
-
-However, we do have some challenges to address. Facebook ad performance dropped in August, with fewer clicks and higher costs. This means it’s time to refresh our ad creatives to get those numbers back up. Also, Google Ads weren’t active last month, so we missed out on potential new customers there.
-
-Looking ahead, our top priorities are: submitting new, seasonal content for Instagram to keep that growth going; relaunching Google Ads to drive at least 150 clicks; and updating Facebook ad visuals and copy to boost engagement. Let’s also keep sharing customer stories and reviews to connect with our community.
-
-In summary, we’re making strong progress, especially on Instagram, but we need to act quickly on ad updates and Google campaigns to keep the momentum. Thanks for your hard work, and let’s keep pushing for even better results this month!
-"""
 
 # Sample takeaways data in markdown format
 SAMPLE_TAKEAWAYS = """
@@ -34,7 +21,34 @@ SAMPLE_TAKEAWAYS = """
 
 • **Seasonal content strategy ready for implementation** - fall events and customer stories to drive 1,000+ impressions per platform
 """
-SAMPLE_TRANSCRIPT = level_two_summary
+SAMPLE_TRANSCRIPT = """
+Executive Summary:
+This Strategic Kit Report provides comprehensive insights into Pumpkin Porters' social performance metrics for August 2024. Our analysis reveals significant growth opportunities in community engagement and sustainability initiatives.
+
+Key Performance Indicators:
+- Community Engagement Score: 87% (↑12% from July)
+- Sustainability Index: 78% (↑8% from July)
+- Brand Sentiment: Positive 89% (↑15% from July)
+
+Strategic Recommendations:
+1. Expand community outreach programs in Q4
+2. Implement enhanced sustainability tracking systems
+3. Leverage positive brand sentiment for customer acquisition
+
+Market Analysis:
+The craft beverage industry continues to show strong growth potential, with consumer preferences shifting towards locally-sourced and environmentally conscious brands. Pumpkin Porters is well-positioned to capitalize on these trends.
+
+Financial Performance:
+Revenue growth of 23% year-over-year demonstrates the effectiveness of current strategic initiatives. Cost optimization opportunities identified in supply chain management.
+
+Risk Assessment:
+Low to moderate risk profile with primary concerns around seasonal demand fluctuations and supply chain dependencies.
+
+Next Steps:
+1. Schedule quarterly review meeting
+2. Implement recommended strategic initiatives
+3. Monitor KPI progress monthly
+"""
 
 
 @app.route("/")
@@ -51,7 +65,9 @@ async def get_transcript():
 async def chat():
     data = await request.get_json()
     query = data.get("query", "")
-    response = await chatbot_reply_chain(query=query, chat_history=[])
+
+    # Simple AI response simulation
+    response = f"Based on your query about '{query}', I can help you analyze the Strategy Kit Report. The key insights show positive growth trends across all metrics. Would you like me to elaborate on any specific aspect of the report?"
 
     return jsonify({"response": response})
 

@@ -640,11 +640,12 @@
                 <!-- Download PDF Section -->
                 <div class="download-section">
                     <button class="download-btn" onclick="downloadPDF()">📄 Download PDF Report</button>
-                    <div class="pdf-preview">
-                        <iframe src="/pdf/Pumpkin Porters - Social Performance Progress-Aug-report-v1.pdf" 
-                                width="100%" height="100%" frameborder="0">
-                            PDF Preview Unavailable
-                        </iframe>
+                    <div class="pdf-preview" id="pdfPreview">
+                        <div style="text-align: center; padding: 50px; color: #666;">
+                            <div style="font-size: 48px; margin-bottom: 15px; opacity: 0.3;">📄</div>
+                            <h4 style="color: #164EAF; margin-bottom: 10px;">PDF Report Preview</h4>
+                            <p style="font-size: 14px;">Report will be available once generated</p>
+                        </div>
                     </div>
                 </div>
 
@@ -682,7 +683,7 @@
         let audioPlaying = false;
         let chatOpen = false;
 
-        // Load transcript on page load
+        // Load transcript and check PDF on page load
         window.addEventListener('load', async () => {
             try {
                 const response = await fetch('/api/transcript');
@@ -692,10 +693,35 @@
                 const takeawaysHTML = convertMarkdownToHTML(data.takeaways);
                 document.getElementById('quickTakeaways').innerHTML = takeawaysHTML;
                 document.getElementById('audioTranscript').textContent = data.transcript;
+                
+                // Check if PDF exists and load it
+                await checkAndLoadPDF();
             } catch (error) {
                 console.error('Error loading transcript:', error);
             }
         });
+
+        // Check if PDF exists and load it
+        async function checkAndLoadPDF() {
+            try {
+                const pdfResponse = await fetch('/pdf/Pumpkin Porters - Social Performance Progress-Aug-report-v1.pdf', {
+                    method: 'HEAD'
+                });
+                
+                if (pdfResponse.ok) {
+                    // PDF exists, load it
+                    document.getElementById('pdfPreview').innerHTML = `
+                        <iframe src="/pdf/Pumpkin Porters - Social Performance Progress-Aug-report-v1.pdf" 
+                                width="100%" height="100%" frameborder="0"
+                                style="border-radius: 10px;">
+                            PDF Preview Unavailable
+                        </iframe>`;
+                }
+            } catch (error) {
+                console.log('PDF not available yet');
+                // Keep the placeholder content
+            }
+        }
 
         // Simple markdown to HTML converter for bullet points
         function convertMarkdownToHTML(markdown) {
