@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Kit Report - Pumpkin Porters</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #F7F9FB 0%, #E8F2FF 100%);
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #164EAF 0%, #1E5BC7 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(22, 78, 175, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header-left p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .header-right {
+            text-align: right;
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .left-content {
+            display: grid;
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(22, 78, 175, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #164EAF, #15AE75);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #164EAF;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3::before {
+            content: '';
+            width: 6px;
+            height: 24px;
+            background: linear-gradient(135deg, #164EAF, #15AE75);
+            border-radius: 3px;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .play-button {
+            background: linear-gradient(135deg, #164EAF, #1E5BC7);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(22, 78, 175, 0.3);
+        }
+
+        .play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(22, 78, 175, 0.4);
+        }
+
+        .transcript-toggle {
+            background: transparent;
+            border: 2px solid #164EAF;
+            color: #164EAF;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .transcript-toggle:hover {
+            background: #164EAF;
+            color: white;
+        }
+
+        .transcript {
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #F7F9FB;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+
+        .transcript::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .transcript::-webkit-scrollbar-track {
+            background: rgba(22, 78, 175, 0.1);
+            border-radius: 3px;
+        }
+
+        .transcript::-webkit-scrollbar-thumb {
+            background: #164EAF;
+            border-radius: 3px;
+        }
+
+        .takeaway-item {
+            margin-bottom: 12px;
+            padding: 8px 0;
+            color: #333;
+            border-left: 3px solid #164EAF;
+            padding-left: 15px;
+            margin-left: 10px;
+        }
+
+        .takeaway-item strong {
+            color: #164EAF;
+            font-weight: 600;
+        }
+
+        .video-container {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        video {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .right-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            position: sticky;
+            top: 40px;
+        }
+
+        .download-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #15AE75, #0E8A5A);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(21, 174, 117, 0.3);
+            width: 100%;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(21, 174, 117, 0.4);
+        }
+
+        .pdf-preview {
+            border: 2px solid #E8F2FF;
+            border-radius: 12px;
+            height: 300px;
+            background: #F7F9FB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        .contact-info {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .contact-info h4 {
+            color: #164EAF;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .contact-info p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .schedule-btn {
+            background: linear-gradient(135deg, #15AE75, #0E8A5A);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(21, 174, 117, 0.3);
+            width: 100%;
+        }
+
+        .schedule-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(21, 174, 117, 0.4);
+        }
+
+        .ai-assistant {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .ai-button {
+            background: linear-gradient(135deg, #164EAF, #1E5BC7);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(22, 78, 175, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .ai-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(22, 78, 175, 0.4);
+        }
+
+        .chat-box {
+            display: none;
+            position: absolute;
+            bottom: 5px;
+            right: 0;
+            width: 540px;
+            height: 820px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(22, 78, 175, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #164EAF, #1E5BC7);
+            color: white;
+            padding: 20px 30px;
+            font-weight: 600;
+            font-size: 18px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            flex: 1;
+            margin: 0;
+        }
+
+        .chat-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            opacity: 0.8;
+        }
+
+        .chat-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .chat-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .chat-messages {
+            height: 670px;
+            overflow-y: auto;
+            padding: 30px 35px;
+            background: linear-gradient(135deg, #FAFBFC 0%, #F7F9FB 100%);
+            position: relative;
+        }
+
+        .chat-messages::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(to bottom, rgba(250, 251, 252, 1), transparent);
+            pointer-events: none;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(22, 78, 175, 0.05);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(22, 78, 175, 0.3);
+            border-radius: 3px;
+        }
+
+        .chat-input-container {
+            padding: 30px 35px;
+            border-top: 1px solid #E8F2FF;
+            display: flex;
+            gap: 15px;
+            background: white;
+            position: relative;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .chat-input-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #E8F2FF, transparent);
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 2px solid #E8F2FF;
+            border-radius: 25px;
+            padding: 12px 20px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #FAFBFC;
+        }
+
+        .chat-input:focus {
+            border-color: #164EAF;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(22, 78, 175, 0.1);
+        }
+
+        .chat-send {
+            background: linear-gradient(135deg, #164EAF, #1E5BC7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(22, 78, 175, 0.3);
+        }
+
+        .chat-send:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(22, 78, 175, 0.4);
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            border-radius: 22px;
+            max-width: 85%;
+            font-size: 14px;
+            line-height: 1.6;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            animation: messageSlideIn 0.3s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #164EAF, #1E5BC7);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 8px;
+        }
+
+        .message.ai {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 8px;
+            border: 1px solid rgba(22, 78, 175, 0.1);
+        }
+
+        .spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            margin: 8px;
+            border: 3px solid rgba(22, 78, 175, 0.1);
+            border-top: 3px solid #164EAF;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            position: relative;
+        }
+
+        .spinner::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 3px solid transparent;
+            border-top: 3px solid rgba(21, 174, 117, 0.6);
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .chat-box {
+                width: 480px;
+                height: 740px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>Prepared for Tracy at Pumpkin Porters</h1>
+                    <p>by Kelly Johnson, Customer Success Manager</p>
+                </div>
+                <div class="header-right">
+                    Last Updated: September 17, 2025
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-content">
+                <!-- Audio Summary Card -->
+                <div class="card">
+                    <h3>Audio Summary</h3>
+                    <div class="audio-controls">
+                        <button class="play-button" onclick="toggleAudio()">▶</button>
+                        <button class="transcript-toggle" onclick="toggleTranscript()">View Transcript</button>
+                    </div>
+                    <audio id="audioPlayer" style="display: none;">
+                        <source src="/audio/audio.wav" type="audio/wav">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <div id="audioTranscript" class="transcript"></div>
+                </div>
+
+                <!-- Quick Takeaways Card -->
+                <div class="card">
+                    <h3>Quick Takeaways</h3>
+                    <div id="quickTakeaways" class="transcript" style="display: block;">
+                        Loading takeaways...
+                    </div>
+                </div>
+
+                <!-- Video Summary Card -->
+                <div class="card">
+                    <h3>Video Summary</h3>
+                    <div class="video-container">
+                        <video controls>
+                            <source src="/video/pp.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-sidebar">
+                <!-- Download PDF Section -->
+                <div class="download-section">
+                    <button class="download-btn" onclick="downloadPDF()">📄 Download PDF Report</button>
+                    <div class="pdf-preview">
+                        <iframe src="/pdf/Pumpkin Porters - Social Performance Progress-Aug-report-v1.pdf" 
+                                width="100%" height="100%" frameborder="0">
+                            PDF Preview Unavailable
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Contact Info & Schedule Meeting -->
+                <div class="contact-info">
+                    <h4>Kelly Johnson</h4>
+                    <p>kelly.johnson@pumpkinporters.com</p>
+                    <p>(817) 456-5484</p>
+                    <button class="schedule-btn" onclick="scheduleMeeting()">📅 Schedule Meeting</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant -->
+    <div class="ai-assistant">
+        <button class="ai-button" onclick="toggleChat()">AI Assistant</button>
+        <div id="chatBox" class="chat-box">
+            <div class="chat-header">
+                <h3>Ask About Your Report</h3>
+                <button class="chat-close" onclick="toggleChat()">✕</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">Hello! I'm here to help you with any questions about the Strategy Kit Report. What would you like to know?</div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Ask me anything...">
+                <button class="chat-send" onclick="sendMessage()">➤</button>
+                <div class="spinner" id="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audioPlaying = false;
+        let chatOpen = false;
+
+        // Load transcript on page load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/api/transcript');
+                const data = await response.json();
+                
+                // Convert markdown takeaways to HTML
+                const takeawaysHTML = convertMarkdownToHTML(data.takeaways);
+                document.getElementById('quickTakeaways').innerHTML = takeawaysHTML;
+                document.getElementById('audioTranscript').textContent = data.transcript;
+            } catch (error) {
+                console.error('Error loading transcript:', error);
+            }
+        });
+
+        // Simple markdown to HTML converter for bullet points
+        function convertMarkdownToHTML(markdown) {
+            return markdown
+                .split('\n')
+                .map(line => {
+                    // Convert bullet points
+                    if (line.trim().startsWith('•')) {
+                        // Remove bullet and trim
+                        let content = line.trim().substring(1).trim();
+                        // Convert **bold** to <strong>
+                        content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                        return `<div class="takeaway-item">• ${content}</div>`;
+                    }
+                    return '';
+                })
+                .filter(line => line.length > 0)
+                .join('');
+        }
+
+        function toggleAudio() {
+            const audio = document.getElementById('audioPlayer');
+            const button = document.querySelector('.play-button');
+            
+            if (audioPlaying) {
+                audio.pause();
+                button.textContent = '▶';
+                audioPlaying = false;
+            } else {
+                audio.play();
+                button.textContent = '⏸';
+                audioPlaying = true;
+            }
+
+            audio.addEventListener('ended', () => {
+                button.textContent = '▶';
+                audioPlaying = false;
+            });
+        }
+
+        function toggleTranscript() {
+            const transcript = document.getElementById('audioTranscript');
+            const button = document.querySelector('.transcript-toggle');
+            
+            if (transcript.style.display === 'none' || transcript.style.display === '') {
+                transcript.style.display = 'block';
+                button.textContent = 'Hide Transcript';
+            } else {
+                transcript.style.display = 'none';
+                button.textContent = 'View Transcript';
+            }
+        }
+
+        function downloadPDF() {
+            const link = document.createElement('a');
+            link.href = '/pdf/Pumpkin Porters - Social Performance Progress-Aug-report-v1.pdf';
+            link.download = 'Pumpkin_Porters_Strategy_Report.pdf';
+            link.click();
+        }
+
+        function scheduleMeeting() {
+            alert('Meeting scheduling functionality would redirect to calendar booking system.');
+        }
+
+        function toggleChat() {
+            const chatBox = document.getElementById('chatBox');
+            chatOpen = !chatOpen;
+            chatBox.style.display = chatOpen ? 'block' : 'none';
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messages = document.getElementById('chatMessages');
+            const spinner = document.getElementById('spinner');
+            
+            if (!input.value.trim()) return;
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.textContent = input.value;
+            messages.appendChild(userMsg);
+
+            const query = input.value;
+            input.value = '';
+            
+            // Show spinner
+            spinner.style.display = 'block';
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+                
+                const data = await response.json();
+                
+                // Add AI response
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message ai';
+                aiMsg.textContent = data.response;
+                messages.appendChild(aiMsg);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'message ai';
+                errorMsg.textContent = 'Sorry, I encountered an error. Please try again.';
+                messages.appendChild(errorMsg);
+            } finally {
+                spinner.style.display = 'none';
+                messages.scrollTop = messages.scrollHeight;
+            }
+        }
+
+        // Enter key support for chat
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

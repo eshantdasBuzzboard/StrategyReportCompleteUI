@@ -1,0 +1,4 @@
+quart
+langchain
+langchain_openai
+python-dotenv
