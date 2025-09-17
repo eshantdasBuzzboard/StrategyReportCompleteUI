@@ -1,5 +1,5 @@
 from quart import Quart, render_template, jsonify, request, send_file
-
+from chatbot.chains import chatbot_reply_chain
 
 app = Quart(__name__)
 
@@ -65,9 +65,7 @@ async def get_transcript():
 async def chat():
     data = await request.get_json()
     query = data.get("query", "")
-
-    # Simple AI response simulation
-    response = f"Based on your query about '{query}', I can help you analyze the Strategy Kit Report. The key insights show positive growth trends across all metrics. Would you like me to elaborate on any specific aspect of the report?"
+    response = await chatbot_reply_chain(query=query, chat_history=[])
 
     return jsonify({"response": response})
 
